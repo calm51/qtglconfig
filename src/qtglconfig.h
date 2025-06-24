@@ -1,3 +1,5 @@
+﻿#pragma execution_character_set("utf-8")
+
 #ifndef QTGLCONFIG_H
 #define QTGLCONFIG_H
 
@@ -13,8 +15,8 @@ class QTGLCONFIG_EXPORT Qtglconfig {
     QString filepath;
     QJsonObject json;
 
-    std::function<QByteArray(QByteArray)> encryptor;
-    std::function<QByteArray(QByteArray)> decryptor;
+    std::function<QByteArray(const QByteArray &)> encryptor; // 返回值要是base64后的
+    std::function<QByteArray(const QByteArray &)> decryptor;
 
     bool load(bool ignore_inexistent = true);
     bool save(QJsonDocument::JsonFormat format);

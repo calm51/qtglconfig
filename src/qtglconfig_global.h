@@ -1,3 +1,5 @@
+﻿#pragma execution_character_set("utf-8")
+
 #ifndef QTGLCONFIG_GLOBAL_H
 #define QTGLCONFIG_GLOBAL_H
 

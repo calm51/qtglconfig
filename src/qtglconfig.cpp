@@ -1,3 +1,5 @@
+﻿#pragma execution_character_set("utf-8")
+
 #include "qtglconfig.h"
 
 #include <QDir>
@@ -35,7 +37,12 @@ bool Qtglconfig::load(bool ignore_inexistent) {
     QJsonParseError error;
     QJsonDocument jsonDocument;
     if (this->decryptor) {
-        jsonDocument = QJsonDocument::fromJson(this->decryptor(text.readAll().toUtf8()), &error);
+        const QByteArray &ciphertext = text.readAll().toUtf8();
+        const QByteArray &plaintext = this->decryptor(ciphertext);
+        if (ciphertext.length() > 0 && plaintext.length() == 0) {
+            return false;
+        }
+        jsonDocument = QJsonDocument::fromJson(plaintext, &error);
     } else {
         jsonDocument = QJsonDocument::fromJson(text.readAll().toUtf8(), &error);
     }
@@ -81,7 +88,12 @@ bool Qtglconfig::save(QJsonDocument::JsonFormat format) {
     QJsonDocument doc(this->json);
     QString data;
     if (this->encryptor) {
-        data = this->encryptor(doc.toJson(format));
+        const QByteArray &plaintext = doc.toJson(format);
+        const QByteArray &ciphertext = this->encryptor(plaintext);
+        if (plaintext.length() > 0 && ciphertext.length() == 0) {
+            return false;
+        }
+        data = ciphertext;
     } else {
         data = doc.toJson(format);
     }
